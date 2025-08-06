@@ -1,4 +1,6 @@
 <?php
+session_start();
+include_once 'setup.php';
 $username = isset($_COOKIE["username"]) ? $_COOKIE["username"] : "";
 $password = isset($_COOKIE["password"]) ? $_COOKIE["password"] : "";
 ?>

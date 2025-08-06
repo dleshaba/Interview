@@ -1,6 +1,6 @@
 <?php
 session_start();
-#include 'db.connection.php'; // your db connection file
+
 $conn = new mysqli("localhost", "root", "newpass", "synrgise_db");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -217,7 +217,12 @@ if ($conn->connect_error) {
                                 <div class="panel" style="cursor: pointer;">
                                     <div class="panel-header">
                                         <div class="due-date text-center pull-right"><?= $date ?><br><?= $month ?></div>
-                                    </div>
+                                    
+                                    <div class="checkbox checkbox-primary ">
+                                                <input class="todo-done" id="1" type="checkbox">
+                                                <label for="1"></label>
+                                            </div>
+                                </div>
                                     <div class="panel-body">
                                         <div class="panel-inner">
                                             <div class="panel-inner-content">
@@ -304,7 +309,7 @@ if ($conn->connect_error) {
                             ?>
 
                             <!-- New Tasks -->
-                             <!--
+                             
                             <div class="row new-task_panel" style="display: none;">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
@@ -338,7 +343,7 @@ if ($conn->connect_error) {
                                         </form>
                                     </div>
                                 </div>
-                            </div> --><!-- end New Tasks -->
+                            </div> <!-- end New Tasks -->
                         </div>
 
                         <div id="completedtasks" class="tab-pane fade">

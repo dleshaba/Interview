@@ -1,5 +1,4 @@
 <?php
-#include 'db_connection.php';
 session_start();
 
 $conn = new mysqli("localhost", "root", "newpass", "synrgise_db");

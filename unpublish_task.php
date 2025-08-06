@@ -11,7 +11,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->bind_param("i", $task_id);
 
     if ($stmt->execute()) {
-        echo "success";
+        echo "<script>
+                window.location.href = 'index.php';
+            </script>";
     } else {
         echo "error";
     }
