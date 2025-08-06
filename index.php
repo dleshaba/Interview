@@ -1,3 +1,12 @@
+<?php
+session_start();
+#include 'db.connection.php'; // your db connection file
+$conn = new mysqli("localhost", "root", "newpass", "synrgise_db");
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -190,103 +199,46 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="panel" style="cursor: pointer;">
-                                        <div class="panel-header">
-                                            <div class="due-date text-center pull-right">28<br>Dec</div>
-                                            <div class="checkbox checkbox-primary ">
-                                                <input class="todo-done" id="1" type="checkbox">
-                                                <label for="1"></label>
-                                            </div>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="panel-inner">
-                                                <div class="panel-inner-content">
-                                                    <h3>Task 1</h3>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                                                </div>
+                            <?php
+
+                        $username = $_SESSION['username'];
+                        
+                        $sql = "SELECT * FROM tasks WHERE user = ? AND is_published = 0 ORDER BY due_date ASC";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bind_param("s", $username);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        
+                        while ($row = $result->fetch_assoc()):
+                            $date = date('d', strtotime($row['due_date']));
+                            $month = date('M', strtotime($row['due_date']));
+                        ?>
+                            <div class="col-sm-6 col-md-4">
+                                <div class="panel" style="cursor: pointer;">
+                                    <div class="panel-header">
+                                        <div class="due-date text-center pull-right"><?= $date ?><br><?= $month ?></div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="panel-inner">
+                                            <div class="panel-inner-content">
+                                                <h3><?= htmlspecialchars($row['task_name']) ?></h3>
+                                                <p><?= htmlspecialchars($row['description']) ?></p>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="panel" style="cursor: pointer;">
-                                        <div class="panel-header">
-                                            <div class="due-date text-center pull-right">28<br>Dec</div>
-                                            <div class="checkbox checkbox-primary ">
-                                                <input class="todo-done" id="2" type="checkbox">
-                                                <label for="2"></label>
-                                            </div>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="panel-inner">
-                                                <div class="panel-inner-content">
-                                                    <h3>Task 2</h3>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="panel" style="cursor: pointer;">
-                                        <div class="panel-header">
-                                            <div class="due-date text-center pull-right">28<br>Dec</div>
-                                            <div class="checkbox checkbox-primary ">
-                                                <input class="todo-done" id="3" type="checkbox">
-                                                <label for="3"></label>
-                                            </div>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="panel-inner">
-                                                <div class="panel-inner-content">
-                                                    <h3>Task 3</h3>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="panel" style="cursor: pointer;">
-                                        <div class="panel-header">
-                                            <div class="due-date text-center pull-right">28<br>Dec</div>
-                                            <div class="checkbox checkbox-primary ">
-                                                <input class="todo-done" id="4" type="checkbox">
-                                                <label for="4"></label>
-                                            </div>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="panel-inner">
-                                                <div class="panel-inner-content">
-                                                    <h3>Task 4</h3>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="panel" style="cursor: pointer;">
-                                        <div class="panel-header">
-                                            <div class="due-date text-center pull-right">28<br>Dec</div>
-                                            <div class="checkbox checkbox-primary ">
-                                                <input class="todo-done" id="5" type="checkbox">
-                                                <label for="5"></label>
-                                            </div>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="panel-inner">
-                                                <div class="panel-inner-content">
-                                                    <h3>Task 5</h3>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                                                </div>
-                                            </div>
+                                    <div class="panel-footer" style="padding: 0;text-align: right;">
+                                        <div class="icon-links quick-icon-links">
+                                            <form method="POST" action="delete_task.php" onsubmit="return confirm('Are you sure you want to delete this task?');" style="display: inline;">
+                                                <input type="hidden" name="task_id" value="<?= $row['id'] ?>">
+                                                <button type="submit" title="Delete" class="btn btn icon-btn" data-toggle="tooltip">
+                                                <i class="fa fa-trash-o"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        <?php endwhile; ?>
                         </div>
 
                         <div id="managetasks" class="tab-pane fade">
@@ -300,10 +252,6 @@
                             <!-- Created Tasks -->
                             <?php
 
-                            $conn = new mysqli("localhost", "root", "newpass", "synrgise_db");
-                            if ($conn->connect_error) {
-                                die("Connection failed: " . $conn->connect_error);
-                            }
 
                             $sql = "SELECT * FROM tasks ORDER BY due_date ASC";
                             $result = $conn->query($sql);
@@ -356,10 +304,11 @@
                             ?>
 
                             <!-- New Tasks -->
+                             <!--
                             <div class="row new-task_panel" style="display: none;">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        <h4 class="panel-title"><i class="fa fa-plus"></i> New Task</h4>
+                                        <h4 class="panel-title"><i class="fa fa-plus"></i> New asdasdTask</h4>
                                     </div>
                                     <div class="panel-body">
                                         <form action="add_task.php" method="POST" role="form">
@@ -389,7 +338,7 @@
                                         </form>
                                     </div>
                                 </div>
-                            </div><!-- end New Tasks -->
+                            </div> --><!-- end New Tasks -->
                         </div>
 
                         <div id="completedtasks" class="tab-pane fade">
