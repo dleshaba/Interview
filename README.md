@@ -47,4 +47,5 @@ This is a lightweight PHP-based task management application. Users can create, e
 
 - Each task is associated with a username.
 - Tasks can be published or unpublished and sorted by due date.
-- The checkbox allows users to select tasks and mark them as complete using the "Mark Complete" button but not fully.
+- The checkbox allows users to select tasks and mark them as complete using the "Mark Complete" button.
+- Disclaimer the project is not fully functional
