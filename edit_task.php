@@ -4,31 +4,51 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$taskId = $_GET['id'];
-$task = null;
+session_start();
 
-if ($stmt = $conn->prepare("SELECT * FROM tasks WHERE id = ?")) {
-    $stmt->bind_param("i", $taskId);
+$task_id = $task_name = $description = $due_date = "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $task_id = $_POST['task_id'];
+    $task_name = $_POST['task_name'];
+    $description = $_POST['description'];
+    $due_date = $_POST['due_date'];
+    $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'anonymous';
+
+    $stmt = $conn->prepare("UPDATE tasks SET task_name = ?, description = ?, due_date = ?, user = ? WHERE id = ?");
+    $stmt->bind_param("ssssi", $task_name, $description, $due_date, $username, $task_id);
+
+    if ($stmt->execute()) {
+        echo "<script>alert('Task updated successfully.'); window.location.href='index.php';</script>";
+    } else {
+        echo "Error updating task: " . $stmt->error;
+    }
+
+    $stmt->close();
+    $conn->close();
+    exit;
+} elseif (isset($_GET['id'])) {
+    $task_id = $_GET['id'];
+
+    $stmt = $conn->prepare("SELECT * FROM tasks WHERE id = ?");
+    $stmt->bind_param("i", $task_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    $task = $result->fetch_assoc();
+
+    if ($result && $result->num_rows === 1) {
+        $task = $result->fetch_assoc();
+        $task_name = $task['task_name'];
+        $description = $task['description'];
+        $due_date = $task['due_date'];
+    } else {
+        $task_id = "";
+    }
+
     $stmt->close();
 }
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST['task_name'];
-    $desc = $_POST['description'];
-    $due = $_POST['due_date'];
-
-    if ($updateStmt = $conn->prepare("UPDATE tasks SET task_name = ?, description = ?, due_date = ? WHERE id = ?")) {
-        $updateStmt->bind_param("sssi", $name, $desc, $due, $taskId);
-        $updateStmt->execute();
-        $updateStmt->close();
-        header("Location: dashboard.php");
-        exit();
-    }
-}
 ?>
+
+
 
 <!DOCTYPE html>
 <html>
@@ -49,32 +69,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <h4 class="panel-title"><i class="fa fa-pencil"></i> Edit Task</h4>
                 </div>
                 <div class="panel-body">
-                    <?php if ($task): ?>
-                    <form role="form" method="POST">
+                    <?php if ($task_id): ?>
+                    <form method="POST" action="edit_task.php">
+                        <input type="hidden" name="task_id" value="<?= $task_id ?>">
+                                        
                         <div class="form-group">
                             <label class="control-label">Task Name</label>
-                            <input type="text" name="task_name" class="form-control" value="<?= htmlspecialchars($task['task_name']) ?>" required>
+                            <input type="text" class="form-control" name="task_name" value="<?= $task_name ?>" required>
                         </div>
                         <div class="form-group">
                             <label class="control-label">Description</label>
-                            <textarea name="description" class="form-control" rows="5" required><?= htmlspecialchars($task['description']) ?></textarea>
+                            <textarea class="form-control" name="description" rows="5" required><?= $description ?></textarea>
                         </div>
-                        <div class="col-md-6">
-                            <div class="row">
-                                <label class="col-md-4">Due Date</label>
-                                <div class="input-group col-md-8">
-                                    <input type="date" class="form-control" name="due_date" value="<?= $task['due_date'] ?>" required>
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                                </div>
-                            </div>
+                        <div class="form-group">
+                            <label class="control-label">Due Date</label>
+                            <input type="date" class="form-control" name="due_date" value="<?= $due_date ?>" required>
                         </div>
-                        <div class="col-md-6">
-                            <div class="pull-right" style="margin-top: 25px;">
-                                <button type="submit" class="create-btn btn btn-primary waves-effect waves-light">Update</button>
-                                <a href="dashboard.php" class="btn btn-default">Cancel</a>
-                            </div>
+                                        
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-success">Save Changes</button>
                         </div>
                     </form>
+
                     <?php else: ?>
                     <div class="alert alert-danger">Task not found.</div>
                     <?php endif; ?>

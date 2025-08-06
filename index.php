@@ -336,11 +336,13 @@
                                                         <i class="fa fa-pencil"></i>
                                                     </button>
                                                 </div>
-                                                <div class="icon-links quick-icon-links">
-                                                    <button data-toggle="tooltip" title="Unpublish" class="btn btn icon-btn">
+                                                <form action="unpublish_task.php" method="POST" style="display: inline;">
+                                                    <input type="hidden" name="task_id" value="<?= $row['id'] ?>">
+                                                    <button type="submit" title="Unpublish" class="btn btn icon-btn">
                                                         <i class="fa fa-power-off"></i>
                                                     </button>
-                                                </div>
+                                                </form>
+
                                             </div>
                                         </div>
                                     </div>
@@ -570,7 +572,25 @@
                         </div>
                     </div>
                 </div>
+<script>
+                $(document).on('click', '.btn-unpublish', function () {
+    const taskId = $(this).data('id');
 
+    $.ajax({
+        url: 'unpublish_task.php',
+        method: 'POST',
+        data: { task_id: taskId },
+        success: function (response) {
+            if (response.trim() === "success") {
+                alert("Task unpublished successfully.");
+                location.reload();
+            } else {
+                alert("Failed to unpublish the task.");
+            }
+        }
+    });
+});
+</script>
 
                 <!-- Footer -->
                 <footer class="footer text-right">

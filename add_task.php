@@ -1,34 +1,29 @@
 <?php
+#include 'db_connection.php';
+session_start();
 
-$servername = "localhost";
-$dbUsername = "root";
-$dbPassword = "newpass";
-$dbName = "synrgise_db";
-
-$conn = new mysqli($servername, $dbUsername, $dbPassword, $dbName);
+$conn = new mysqli("localhost", "root", "newpass", "synrgise_db");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$task_name = trim($_POST['task_name']);
-$description = trim($_POST['description']);
-$due_date = date('Y-m-d', strtotime($_POST['due_date']));
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $task_name = $_POST['task_name'];
+    $description = $_POST['description'];
+    $due_date = $_POST['due_date'];
 
-$stmt = $conn->prepare("INSERT INTO tasks (task_name, description, due_date) VALUES (?, ?, ?)");
-$stmt->bind_param("sss", $task_name, $description, $due_date);
+    $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'anonymous';
 
-if ($stmt->execute()) {
-    echo "<script>
-        alert('Task created successfully!');
-        window.location.href = 'index.html';
-    </script>";
-} else {
-    echo "<script>
-        alert('Error adding task: " . $stmt->error . "');
-        window.history.back();
-    </script>";
+    $stmt = $conn->prepare("INSERT INTO tasks (task_name, description, due_date, user) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $task_name, $description, $due_date, $username);
+
+    if ($stmt->execute()) {
+        echo "<script>alert('Task added successfully!'); window.location.href='index.php';</script>";
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+
+    $stmt->close();
+    $conn->close();
 }
-
-$stmt->close();
-$conn->close();
 ?>
