@@ -1,3 +1,8 @@
+<?php
+$username = isset($_COOKIE["username"]) ? $_COOKIE["username"] : "";
+$password = isset($_COOKIE["password"]) ? $_COOKIE["password"] : "";
+?>
+
 <!DOCTYPE html>
 <html class="login">
     <head>
@@ -35,20 +40,20 @@
                         
                         <div class="form-group">
                             <div class="col-xs-12">
-                                <input class="form-control input-lg" type="text" name="username" required="" placeholder="Username">
+                                <input class="form-control input-lg" type="text" name="username" required placeholder="Username" value="<?php echo $username; ?>">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <div class="col-xs-12">
-                                <input class="form-control input-lg" type="password" name="password" required="" placeholder="Password">
+                                <input class="form-control input-lg" type="password" name="password" required placeholder="Password" value="<?php echo $password; ?>">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <div class="col-xs-12 col-md-8">
                                 <div class="checkbox checkbox-primary">
-                                    <input id="checkbox-signup" type="checkbox">
+                                    <input id="checkbox-signup" type="checkbox" name="remember_me">
                                     <label for="checkbox-signup">
                                         Remember me
                                     </label>

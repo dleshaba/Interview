@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 $servername = "localhost";
 $dbUsername = "root";
 $dbPassword = "newpass";
@@ -13,10 +15,8 @@ if ($conn->connect_error) {
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = trim($_POST["username"]);
     $password = trim($_POST["password"]);
+    $remember = isset($_POST["remember_me"]);
 
-    var_dump($password);
-    echo "username: $username<br> pass: $password<br>";
-    
     $stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -27,6 +27,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->fetch();
 
         if (password_verify($password, $hashedPassword)) {
+            // ✅ Set session
+            $_SESSION["username"] = $username;
+
+            // ✅ Set cookies if 'remember me' is checked
+            if ($remember) {
+                setcookie("username", $username, time() + (86400 * 30), "/"); // 30 days
+                setcookie("password", $password, time() + (86400 * 30), "/");
+            }
 
             echo "<script>
                 alert('Login successful');
