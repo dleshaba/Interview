@@ -27,29 +27,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->fetch();
 
         if (password_verify($password, $hashedPassword)) {
-            // ✅ Set session
             $_SESSION["username"] = $username;
 
-            // ✅ Set cookies if 'remember me' is checked
             if ($remember) {
-                setcookie("username", $username, time() + (86400 * 30), "/"); // 30 days
+                setcookie("username", $username, time() + (86400 * 30), "/");
                 setcookie("password", $password, time() + (86400 * 30), "/");
             }
 
             echo "<script>
                 alert('Login successful');
-                window.location.href = 'index.html';
+                window.location.href = 'index.php';
             </script>";
         } else {
             echo "<script>
                 alert('Incorrect password');
-                window.location.href = 'login.html';
+                window.location.href = 'login_page.php';
             </script>";
         }
     } else {
         echo "<script>
             alert('User not found');
-            window.location.href = 'login.html';
+            window.location.href = 'login_page.php';
         </script>";
     }
 

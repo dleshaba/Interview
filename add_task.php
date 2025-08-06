@@ -20,7 +20,7 @@ $stmt->bind_param("sss", $task_name, $description, $due_date);
 if ($stmt->execute()) {
     echo "<script>
         alert('Task created successfully!');
-        window.location.href = 'index.php'; // change to your main page
+        window.location.href = 'index.html';
     </script>";
 } else {
     echo "<script>

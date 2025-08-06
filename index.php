@@ -298,143 +298,60 @@
                                 </div>
                             </div>
                             <!-- Created Tasks -->
-                            <div class="row created-tasks">
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="panel" style="cursor: pointer;">
-                                        <div class="panel-header">
-                                            <div class="due-date text-center pull-right">28<br>Dec</div>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="panel-inner">
-                                                <div class="panel-inner-content">
-                                                    <h3>Task 1</h3>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                            <?php
+
+                            $conn = new mysqli("localhost", "root", "newpass", "synrgise_db");
+                            if ($conn->connect_error) {
+                                die("Connection failed: " . $conn->connect_error);
+                            }
+
+                            $sql = "SELECT * FROM tasks ORDER BY due_date ASC";
+                            $result = $conn->query($sql);
+
+                            if ($result->num_rows > 0): ?>
+                                <div class="row created-tasks">
+                                    <?php while ($row = $result->fetch_assoc()):
+                                        $taskDate = date("d", strtotime($row['due_date']));
+                                        $taskMonth = date("M", strtotime($row['due_date']));
+                                    ?>
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="panel" style="cursor: pointer;">
+                                            <div class="panel-header">
+                                                <div class="due-date text-center pull-right">
+                                                    <?= $taskDate ?><br><?= $taskMonth ?>
+                                                </div>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="panel-inner">
+                                                    <div class="panel-inner-content">
+                                                        <h3><?= htmlspecialchars($row['task_name']) ?></h3>
+                                                        <p><?= htmlspecialchars($row['description']) ?></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel-footer" style="padding: 0;text-align: right;">
+                                                <div class="icon-links quick-icon-links">
+                                                    <button data-toggle="tooltip" title="Edit" class="btn btn icon-btn"
+                                                        onclick="window.location.href='edit_task.php?id=<?= $row['id'] ?>'">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="icon-links quick-icon-links">
+                                                    <button data-toggle="tooltip" title="Unpublish" class="btn btn icon-btn">
+                                                        <i class="fa fa-power-off"></i>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="panel-footer" style="padding: 0;text-align: right;">
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="" title="Edit" class="btn btn icon-btn">
-                                                    <i class="fa fa-pencil"></i>
-                                                </button>
-                                            </div>
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="" title="Unpublish" class="btn btn icon-btn">
-                                                    <i class="fa fa-power-off"></i>
-                                                </button>
-                                            </div>
-                                        </div>
                                     </div>
+                                    <?php endwhile; ?>
                                 </div>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="panel" style="cursor: pointer;">
-                                        <div class="panel-header">
-                                            <div class="due-date text-center pull-right">28<br>Dec</div>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="panel-inner">
-                                                <div class="panel-inner-content">
-                                                    <h3>Task 2</h3>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel-footer" style="padding: 0;text-align: right;">
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="" title="Edit" class="btn btn icon-btn">
-                                                    <i class="fa fa-pencil"></i>
-                                                </button>
-                                            </div>
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="" title="Unpublish" class="btn btn icon-btn">
-                                                    <i class="fa fa-power-off"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="panel" style="cursor: pointer;">
-                                        <div class="panel-header">
-                                            <div class="due-date text-center pull-right">28<br>Dec</div>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="panel-inner">
-                                                <div class="panel-inner-content">
-                                                    <h3>Task 3</h3>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel-footer" style="padding: 0;text-align: right;">
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="" title="Edit" class="btn btn icon-btn">
-                                                    <i class="fa fa-pencil"></i>
-                                                </button>
-                                            </div>
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="" title="Unpublish" class="btn btn icon-btn">
-                                                    <i class="fa fa-power-off"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="panel" style="cursor: pointer;">
-                                        <div class="panel-header">
-                                            <div class="due-date text-center pull-right">28<br>Dec</div>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="panel-inner">
-                                                <div class="panel-inner-content">
-                                                    <h3>Task 4</h3>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel-footer" style="padding: 0;text-align: right;">
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="" title="Edit" class="btn btn icon-btn">
-                                                    <i class="fa fa-pencil"></i>
-                                                </button>
-                                            </div>
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="" title="Unpublish" class="btn btn icon-btn">
-                                                    <i class="fa fa-power-off"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="panel" style="cursor: pointer;">
-                                        <div class="panel-header">
-                                            <div class="due-date text-center pull-right">28<br>Dec</div>
-                                        </div>
-                                        <div class="panel-body">
-                                            <div class="panel-inner">
-                                                <div class="panel-inner-content">
-                                                    <h3>Task 5</h3>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel-footer" style="padding: 0;text-align: right;">
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="" title="Edit" class="btn btn icon-btn">
-                                                    <i class="fa fa-pencil"></i>
-                                                </button>
-                                            </div>
-                                            <div class="icon-links quick-icon-links">
-                                                <button data-toggle="tooltip" type="button" id="" title="Unpublish" class="btn btn icon-btn">
-                                                    <i class="fa fa-power-off"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div><!-- end Created Tasks -->
+                            <?php else: ?>
+                                <div class="alert alert-info">No tasks available.</div>
+                            <?php endif;
+
+                            $conn->close();
+                            ?>
 
                             <!-- New Tasks -->
                             <div class="row new-task_panel" style="display: none;">
