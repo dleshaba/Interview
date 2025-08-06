@@ -1,9 +1,10 @@
 <?php
-$conn = new mysqli("localhost", "root", "newpass", "synrgise_db");
+include_once 'Config.php';
+
+$conn = new mysqli("$servername", "$dbUsername", "$dbPassword", "$dbName");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-
 session_start();
 
 $task_id = $task_name = $description = $due_date = "";
@@ -72,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <?php if ($task_id): ?>
                     <form method="POST" action="edit_task.php">
                         <input type="hidden" name="task_id" value="<?= $task_id ?>">
-                                        
+
                         <div class="form-group">
                             <label class="control-label">Task Name</label>
                             <input type="text" class="form-control" name="task_name" value="<?= $task_name ?>" required>
@@ -85,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             <label class="control-label">Due Date</label>
                             <input type="date" class="form-control" name="due_date" value="<?= $due_date ?>" required>
                         </div>
-                                        
+
                         <div class="text-right">
                             <button type="submit" class="btn btn-success">Save Changes</button>
                         </div>

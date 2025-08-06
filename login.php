@@ -1,11 +1,8 @@
 <?php
 
-session_start();
+include_once 'Config.php';
 
-$servername = "localhost";
-$dbUsername = "root";
-$dbPassword = "newpass";
-$dbName = "synrgise_db";
+session_start();
 
 $conn = new mysqli($servername, $dbUsername, $dbPassword, $dbName);
 if ($conn->connect_error) {
